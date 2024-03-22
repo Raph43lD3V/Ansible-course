@@ -75,10 +75,15 @@
         remote_src: yes
       become: yes
 
-    - name: Replace old hostname with new hostname (requires Ansible >= 2.4)
-        ansible.builtin.replace:
-          path: /srv/www/wordpress/wp-config.php
-          regexp: 'database_name_here'
-          replace: 'wordpress_db'
+    - name: configure wp-config with database
+      ansible.builtin.replace:
+        path: /srv/www/wordpress/wp-config.php
+        regexp: '{{ item.regexp }}'
+        replace: '{{ item.replace }}'
+      with_items:
+        - { regexp: 'database_name_here', replace: 'wordpress_db'}  
+        - { regexp: 'username_here', replace: 'wordpress_user'}
+        - { regexp: 'password_here', replace: '12345'}
+      become: yes
 
 
